@@ -10,19 +10,25 @@ Following the success of our previous Hadoop Docker [images](https://registry.hu
 
 _FYI: All the former Hadoop releases (2.3, 2.4.0, 2.4.1, 2.5.0, 2.5.1, 2.5.2, 2.6.0) are available in the GitHub branches or our [Docker Registry](https://registry.hub.docker.com/u/sequenceiq/hadoop-docker/) - check the tags._
 
+# DockerContainerExecutor
+
+This version of image is using the DockerContainerExecutor
+http://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/DockerContainerExecutor.html
+
+
 # Build the image
 
 If you'd like to try directly from the Dockerfile you can build the image as:
 
 ```
-docker build  -t sequenceiq/hadoop-docker:2.6.0 .
+docker build  -t sequenceiq/hadoop-docker:2.6.0-dce .
 ```
 # Pull the image
 
 The image is also released as an official Docker image from Docker's automated build repository - you can always pull or refer the image when launching containers.
 
 ```
-docker pull sequenceiq/hadoop-docker:2.6.0
+docker pull sequenceiq/hadoop-docker:2.6.0-dce
 ```
 
 # Start a container
@@ -31,8 +37,19 @@ In order to use the Docker image you have just build or pulled use:
 
 **Make sure that SELinux is disabled on the host. If you are using boot2docker you don't need to do anything.**
 
+On host machine please create the directories and make sure that they are empty
+
 ```
-docker run -i -t -v /usr/local/bin/docker:/usr/local/bin/docker -v /var/run/docker.sock:/var/run/docker.sock sequenceiq/hadoop-docker:2.6.0 /etc/bootstrap.sh -bash
+rm -rf /tmp/hadoop-root/nm-local-dir
+mkdir -p /tmp/hadoop-root/nm-local-dir
+rm -rf /usr/local/hadoop/logs/userlogs/
+mkdir -p /usr/local/hadoop/logs/userlogs/
+```
+
+Launch the image:
+```
+docker run -i -t -v /usr/local/bin/docker:/usr/local/bin/docker -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/hadoop-root/nm-local-dir:/tmp/hadoop-root/nm-local-dir -v /usr/local/hadoop/logs/userlogs:/usr/local/hadoop/logs/userlogs --net=host sequenceiq/hadoop-docker:2.6.0-dce /etc/bootstrap.sh -bash
+
 ```
 
 ## Testing
@@ -41,11 +58,14 @@ You can run one of the stock examples:
 
 ```
 cd $HADOOP_PREFIX
-# run the mapreduce
-bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar grep input output 'dfs[a-z.]+'
+# run the mapreduce with 2.4.1
+cd $HADOOP_PREFIX
+bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar teragen -Dmapreduce.map.env="yarn.nodemanager.docker-container-executor.image-name=sequenceiq/hadoop-docker:2.4.1" -Dyarn.app.mapreduce.am.env="yarn.nodemanager.docker-container-executor.image-name=sequenceiq/hadoop-docker:2.4.1" 1 /tmp/out
 
-# check the output
-bin/hdfs dfs -cat output/*
+cd $HADOOP_PREFIX
+# run the mapreduce with 2.6.0
+bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar teragen -Dmapreduce.map.env="yarn.nodemanager.docker-container-executor.image-name=sequenceiq/hadoop-docker:2.6.0" -Dyarn.app.mapreduce.am.env="yarn.nodemanager.docker-container-executor.image-name=sequenceiq/hadoop-docker:2.6.0" 1 /tmp/out
+
 ```
 
 ## Hadoop native libraries, build, Bintray, etc
