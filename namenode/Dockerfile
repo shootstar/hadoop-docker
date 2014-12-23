@@ -48,13 +48,13 @@ RUN cp $HADOOP_PREFIX/etc/hadoop/*.xml $HADOOP_PREFIX/input
 
 # pseudo distributed
 ADD core-site.xml.template $HADOOP_PREFIX/etc/hadoop/core-site.xml.template
-RUN sed s/HOSTNAME/localhost/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > /usr/local/hadoop/etc/hadoop/core-site.xml
-ADD ../conf/hdfs-site.xml $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml.template
-ADD ../conf/mapred-site.xml $HADOOP_PREFIX/etc/hadoop/mapred-site.xml
-ADD ../conf/yarn-site.xml $HADOOP_PREFIX/etc/hadoop/yarn-site.xml.template
+RUN sed s/NAMENODE/localhost/ /usr/local/hadoop/etc/hadoop/core-site.xml.template > /usr/local/hadoop/etc/hadoop/core-site.xml
+ADD hdfs-site.xml.template $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml.template
+ADD mapred-site.xml $HADOOP_PREFIX/etc/hadoop/mapred-site.xml
+ADD yarn-site.xml.template $HADOOP_PREFIX/etc/hadoop/yarn-site.xml.template
 
-RUN sed s/HOSTNAME/localhost/ /usr/local/hadoop/etc/hadoop/yarn-site.xml.template > /usr/local/hadoop/etc/hadoop/yarn-site.xml
-RUN sed s/HOSTNAME/localhost/ /usr/local/hadoop/etc/hadoop/hdfs-site.xml.template > /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+RUN sed s/RESOUCEMANAGER/localhost/ /usr/local/hadoop/etc/hadoop/yarn-site.xml.template > /usr/local/hadoop/etc/hadoop/yarn-site.xml
+RUN sed s/NAMENODE/localhost/ /usr/local/hadoop/etc/hadoop/hdfs-site.xml.template > /usr/local/hadoop/etc/hadoop/hdfs-site.xml
 RUN $HADOOP_PREFIX/bin/hdfs namenode -format
 
 # fixing the libhadoop.so like a boss

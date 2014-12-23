@@ -7,4 +7,9 @@
         <name>dfs.namenode.http-address</name>
         <value>NAMENODE:50070</value>
     </property>
+    <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>NAMENODE:50090</value>
+    </property>
+
 </configuration>
