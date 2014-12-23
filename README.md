@@ -2,6 +2,66 @@
 
 This is modified branch of [https://github.com/sequenceiq/hadoop-docker](https://github.com/sequenceiq/hadoop-docker)
 
+# Build images
+
+```
+docker build -t showyou/hadoop-docker-name:2.6.0-s1 ./namenode/
+docker build -t showyou/hadoop-docker-data:2.6.0-s1 ./datanode/
+```
+
+# Start datanode containers
+
+In order to use the Docker image you have just build use:
+
+**Make sure that SELinux is disabled on the host. If you are using boot2docker you don't need to do anything.**
+
+```
+docker run -i -t showyou/hadoop-docker-data:2.6.0-s1 /etc/bootstrap.sh -bash
+# /sbin/ifconfig
+# echo $HOSTNAME
+```
+Memo ip and hostname.
+if you want to not only one container, please repeat to run and memo each containers.
+
+# Start namenode container and assign
+```
+docker run -i -t showyou/hadoop-docker-name:2.6.0-s1 /etc/bootstrap.sh -bash
+```
+Write (each)hostname to slaves, and ip with hostname to /etc/hosts.
+i.e. if you have two datanodes(ip, hostname)
+```
+172.17.0.135    bbf52007d6fc
+172.17.0.134    ad1a9958ae7a
+```
+Add slaves file this:
+```
+bbf52007d6fc
+ad1a9958ae7a
+```
+Add /etc/hosts file this:
+```
+172.17.0.135    bbf52007d6fc
+172.17.0.134    ad1a9958ae7a
+```
+
+# Distribute config filesF
+In order to copy setting files, you should do this script in the namenode:
+```
+/bin/bash /etc/dist_files.sh bbf52007d6fc
+/bin/bash /etc/dist_files.sh ad1a9958ae7a
+```
+
+# Run hadoop cluster
+In the namenode:
+```
+$HADOOP_PREFIX/sbin/stop-yarn.sh
+$HADOOP_PREFIX/sbin/stop-hdfs.sh
+$HADOOP_PREFIX/sbin/start-hdfs.sh
+$HADOOP_PREFIX/sbin/start-yarn.sh
+
+```
+
+#old
 
 _Note: this is the master branch - for a particular Hadoop version always check the related branch_
 

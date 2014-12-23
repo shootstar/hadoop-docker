@@ -76,8 +76,11 @@ RUN chown root:root /root/.ssh/config
 ADD bootstrap.sh /etc/bootstrap.sh
 RUN chown root:root /etc/bootstrap.sh
 RUN chmod 700 /etc/bootstrap.sh
-
 ENV BOOTSTRAP /etc/bootstrap.sh
+
+ADD dist_files.sh /etc/dist_files.sh
+RUN chown root:root /etc/dist_files.sh
+RUN chmod 700 /etc/dist_files.sh
 
 # workingaround docker.io build error
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
