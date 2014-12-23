@@ -1,5 +1,8 @@
 #Apache Hadoop 2.6.0 Docker image
 
+This is modified branch of [https://github.com/sequenceiq/hadoop-docker](https://github.com/sequenceiq/hadoop-docker)
+
+
 _Note: this is the master branch - for a particular Hadoop version always check the related branch_
 
 A few weeks ago we released an Apache Hadoop 2.3 Docker image - this quickly become the most [popular](https://registry.hub.docker.com/search?q=hadoop&s=downloads) Hadoop image in the Docker [registry](https://registry.hub.docker.com/).
