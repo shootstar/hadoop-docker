@@ -51,9 +51,9 @@ nameStartOpt="$nameStartOpt $@"
 
 #---------------------------------------------------------
 # namenodes
-#
-#NAMENODES=$($HADOOP_PREFIX/bin/hdfs getconf -namenodes)
-#
+
+NAMENODES=$($HADOOP_PREFIX/bin/hdfs getconf -namenodes)
+
 # echo "Starting namenodes on [$NAMENODES]"
 #
 # "$HADOOP_PREFIX/sbin/hadoop-daemons.sh" \
